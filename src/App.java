@@ -9,6 +9,7 @@ public class App {
         int opcao = 0;
 
         do {
+            System.out..println("menu pro leilao online");
             System.out.println("1  - Registrar participante");
             System.out.println("2  - Login");
             System.out.println("3 - Listar participantes");
