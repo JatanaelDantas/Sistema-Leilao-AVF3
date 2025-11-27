@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -69,7 +70,8 @@ public class Leilao {
         this.statusLeilao = statusLeilao;
     }
 
-    public boolean registrarLeilao() throws Exception {
+
+      public boolean registrarLeilao() throws Exception {
 
         FileWriter fw = new FileWriter("leiloes.txt", true);
         BufferedWriter bw = new BufferedWriter(fw);
@@ -88,25 +90,78 @@ public class Leilao {
         return true;
     }
 
-      public Leilao consultarLeilao(int idProcurado) throws Exception {
 
-        FileReader fr = new FileReader("leiloes.txt");
+    public ArrayList<Leilao> listarLeiloes() throws Exception {
+
+        ArrayList<Leilao> lista = new ArrayList<Leilao>();
+
+        File arquivo = new File("leiloes.txt");
+        if (!arquivo.exists()) {
+            return lista;
+        }
+
+        FileReader fr = new FileReader(arquivo);
         BufferedReader br = new BufferedReader(fr);
 
         String linha = br.readLine();
 
         while (linha != null) {
 
+            if (linha.trim().equals("")) {
+                linha = br.readLine();
+                continue;
+            }
+
             String[] partes = linha.split(";");
 
             int id = Integer.parseInt(partes[0]);
-            String dataIni  = partes[1];
-            String horaIni  = partes[2];
-            String dataFim  = partes[3];
-            String horaFim  = partes[4];
-            boolean status  = Boolean.parseBoolean(partes[5]);
+            String dataIni = partes[1];
+            String horaIni = partes[2];
+            String dataFim = partes[3];
+            String horaFim = partes[4];
+            boolean status = Boolean.parseBoolean(partes[5]);
+
+            Leilao l = new Leilao(id, dataIni, horaIni, dataFim, horaFim, status);
+            lista.add(l);
+
+            linha = br.readLine();
+        }
+
+        br.close();
+        return lista;
+    }
+
+
+    public Leilao consultarLeilao(int idProcurado) throws Exception {
+
+        File arquivo = new File("leiloes.txt");
+        if (!arquivo.exists()) {
+            return null;
+        }
+
+        FileReader fr = new FileReader(arquivo);
+        BufferedReader br = new BufferedReader(fr);
+
+        String linha = br.readLine();
+
+        while (linha != null) {
+
+            if (linha.trim().equals("")) {
+                linha = br.readLine();
+                continue;
+            }
+
+            String[] partes = linha.split(";");
+
+            int id = Integer.parseInt(partes[0]);
 
             if (id == idProcurado) {
+                String dataIni = partes[1];
+                String horaIni = partes[2];
+                String dataFim = partes[3];
+                String horaFim = partes[4];
+                boolean status = Boolean.parseBoolean(partes[5]);
+
                 br.close();
                 return new Leilao(id, dataIni, horaIni, dataFim, horaFim, status);
             }
@@ -118,59 +173,12 @@ public class Leilao {
         return null;
     }
 
-    public ArrayList<Leilao> listarLeiloes() throws Exception {
-
-    ArrayList<Leilao> lista = new ArrayList<Leilao>();
-
-    FileReader fr = new FileReader("leiloes.txt");
-    BufferedReader br = new BufferedReader(fr);
-
-    String linha = br.readLine();
-
-    while (linha != null) {
-
-        String[] partes = linha.split(";");
-
-        int idLeilaoArquivo     = Integer.parseInt(partes[0]);
-        String dataInicioArq    = partes[1];
-        String horaInicioArq    = partes[2];
-        String dataFimArq       = partes[3];
-        String horaFimArq       = partes[4];
-        boolean statusArq       = Boolean.parseBoolean(partes[5]);
-
-        Leilao l = new Leilao(idLeilaoArquivo, dataInicioArq, horaInicioArq,
-                              dataFimArq, horaFimArq, statusArq);
-        lista.add(l);
-
-        linha = br.readLine();
+  
+    public void mostrar() {
+        System.out.println("Id leilão : " + idLeilao);
+        System.out.println("Início    : " + dataInicioLeilao + " " + horaInicioLeilao);
+        System.out.println("Fim       : " + dataFimLeilao + " " + horaFimLeilao);
+        System.out.println("Status    : " + statusLeilao);
+        System.out.println("----------------------------------");
     }
-
-    br.close();
-    return lista;
-}
-
-
-public boolean iniciarLeilao(String dataInicio, String horaInicio) throws Exception {
-    this.dataInicioLeilao = dataInicio;
-    this.horaInicioLeilao = horaInicio;
-    this.statusLeilao = true;
-    return registrarLeilao();
-}
-
-
-public boolean finalizarLeilao(String dataFim, String horaFim) throws Exception {
-    this.dataFimLeilao = dataFim;
-    this.horaFimLeilao = horaFim;
-    this.statusLeilao = true;
-    return registrarLeilao();
-}
-
-
-public void mostrar() {
-    System.out.println("ID Leilão: " + idLeilao);
-    System.out.println("Início: " + dataInicioLeilao + " " + horaInicioLeilao);
-    System.out.println("Fim: " + dataFimLeilao + " " + horaFimLeilao);
-    System.out.println("Status (boolean): " + statusLeilao);
-    System.out.println("--------------------------------");
-}
 }

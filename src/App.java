@@ -2,12 +2,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
+
     public static void main(String[] args) throws Exception {
-                Scanner sc = new Scanner(System.in);
+
+        Scanner sc = new Scanner(System.in);
         int opcao = 0;
 
         do {
-            System.out.println("====== MENU ======");
+            System.out.println("====== MENU DO SISTEMA DE LEILÃO ======");
             System.out.println("1  - Cadastrar participante");
             System.out.println("2  - Login participante");
             System.out.println("3  - Listar participantes");
@@ -17,12 +19,14 @@ public class App {
             System.out.println("7  - Listar itens");
             System.out.println("8  - Registrar lance");
             System.out.println("9  - Listar lances");
-            System.out.println("10 - Sair");
+            System.out.println("10 - Arrematar item");
+            System.out.println("11 - Sair");
             System.out.print("Opção: ");
             opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-                case 1: // Cadastrar participante
+
+                case 1: // cadastrar participante
                     System.out.print("Id do participante: ");
                     int idP = Integer.parseInt(sc.nextLine());
                     System.out.print("Nome: ");
@@ -43,7 +47,7 @@ public class App {
                     System.out.println("Participante cadastrado!\n");
                     break;
 
-                case 2: // Login participante
+                case 2: // login
                     System.out.print("Login: ");
                     String loginDig = sc.nextLine();
                     System.out.print("Senha: ");
@@ -59,7 +63,7 @@ public class App {
                     }
                     break;
 
-                case 3: // Listar participantes
+                case 3: // listar participantes
                     Participante auxP2 = new Participante(0, "", "", "", "", "", "");
                     ArrayList<Participante> listaP = auxP2.listarParticipantes();
                     for (Participante part : listaP) {
@@ -67,7 +71,7 @@ public class App {
                     }
                     break;
 
-                case 4: // Cadastrar leilão
+                case 4: // cadastrar leilão
                     System.out.print("Id do leilão: ");
                     int idL = Integer.parseInt(sc.nextLine());
                     System.out.print("Data início (dd/mm/aaaa): ");
@@ -84,7 +88,7 @@ public class App {
                     System.out.println("Leilão cadastrado!\n");
                     break;
 
-                case 5: // Listar leilões
+                case 5: // listar leilões
                     Leilao auxL = new Leilao(0, "", "", "", "", false);
                     ArrayList<Leilao> listaL = auxL.listarLeiloes();
                     for (Leilao l : listaL) {
@@ -92,7 +96,7 @@ public class App {
                     }
                     break;
 
-                case 6: // Cadastrar item
+                case 6: // cadastrar item
                     System.out.print("Id do item: ");
                     int idItem = Integer.parseInt(sc.nextLine());
                     System.out.print("Id do leilão: ");
@@ -108,15 +112,15 @@ public class App {
                     System.out.println("Item cadastrado!\n");
                     break;
 
-                case 7: // Listar itens
-                    ItemLeilao auxItem = new ItemLeilao(0, null, "", 0.0, false, null);
-                    ArrayList<ItemLeilao> listaItens = auxItem.listarItens();
+                case 7: // listar itens
+                    ItemLeilao auxItemLista = new ItemLeilao(0, null, "", 0.0, false, null);
+                    ArrayList<ItemLeilao> listaItens = auxItemLista.listarItens();
                     for (ItemLeilao it : listaItens) {
                         it.mostrar();
                     }
                     break;
 
-                case 8: // Registrar lance
+                case 8: // registrar lance
                     System.out.print("Id do lance: ");
                     int idLance = Integer.parseInt(sc.nextLine());
                     System.out.print("Id do participante: ");
@@ -137,15 +141,60 @@ public class App {
                     System.out.println("Lance registrado!\n");
                     break;
 
-                case 9: // Listar lances
-                    Lance auxLance = new Lance(0, null, null, 0.0, "", "");
-                    ArrayList<Lance> listaLances = auxLance.listarLances();
+                case 9: // listar lances
+                    Lance auxLanceLista = new Lance(0, null, null, 0.0, "", "");
+                    ArrayList<Lance> listaLances = auxLanceLista.listarLances();
                     for (Lance lan : listaLances) {
                         lan.mostrar();
                     }
                     break;
 
-                case 10:
+                case 10: // arrematar item
+                    System.out.print("Id do item que deseja arrematar: ");
+                    int idItemArrematar = Integer.parseInt(sc.nextLine());
+
+                    ItemLeilao auxItemArremate = new ItemLeilao(0, null, "", 0.0, false, null);
+                    ArrayList<ItemLeilao> itens = auxItemArremate.listarItens();
+
+                    ItemLeilao itemEscolhido = null;
+                    for (ItemLeilao it : itens) {
+                        if (it.getIdItem() == idItemArrematar) {
+                            itemEscolhido = it;
+                            break;
+                        }
+                    }
+
+                    if (itemEscolhido == null) {
+                        System.out.println("Item não encontrado.\n");
+                        break;
+                    }
+
+                    Lance auxLanceArremate = new Lance(0, null, null, 0.0, "", "");
+                    ArrayList<Lance> lances = auxLanceArremate.listarLances();
+
+                    Lance lanceVencedor = null;
+                    double maiorValor = 0.0;
+
+                    for (Lance lan : lances) {
+                        if (lan.getItemLeilao() != null &&
+                            lan.getItemLeilao().getIdItem() == idItemArrematar &&
+                            lan.getValorLance() >= maiorValor) {
+
+                            maiorValor = lan.getValorLance();
+                            lanceVencedor = lan;
+                        }
+                    }
+
+                    if (lanceVencedor == null) {
+                        System.out.println("Nenhum lance encontrado para este item.\n");
+                    } else {
+                        itemEscolhido.arrematarItem(lanceVencedor);
+                        System.out.println("Item arrematado com o lance de valor: " +
+                                           lanceVencedor.getValorLance() + "\n");
+                    }
+                    break;
+
+                case 11:
                     System.out.println("Saindo...");
                     break;
 
@@ -154,9 +203,8 @@ public class App {
                     break;
             }
 
-        } while (opcao != 10);
+        } while (opcao != 11);
 
         sc.close();
-
     }
 }

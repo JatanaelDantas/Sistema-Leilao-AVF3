@@ -1,1 +1,0 @@
-100;10;Notebook Gamer;2500.0;false;-1

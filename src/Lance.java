@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -69,108 +70,137 @@ public class Lance {
         this.horaLance = horaLance;
     }
 
-public boolean registrarLance() throws Exception {
 
-    FileWriter fw = new FileWriter("lances.txt", true);
-    BufferedWriter bw = new BufferedWriter(fw);
+ public boolean registrarLance() throws Exception {
 
-    int idItem;
-    if (itemLeilao == null) {
-        idItem = -1;
-    } else {
-        idItem = itemLeilao.getIdItem();
-    }
+        FileWriter fw = new FileWriter("lances.txt", true);
+        BufferedWriter bw = new BufferedWriter(fw);
 
-    int idParticipante;
-    if (participante == null) {
-        idParticipante = -1;
-    } else {
-        idParticipante = participante.getIdParticipante();
-    }
-
-    String linha = idLance + ";" +
-                   idParticipante + ";" +
-                   idItem + ";" +
-                   valorLance + ";" +
-                   dataLance + ";" +
-                   horaLance;
-
-    bw.write(linha);
-    bw.newLine();
-    bw.close();
-
-    return true;
-}
-
-
-public Lance consultarLance(int idProcurado) throws Exception {
-
-    FileReader fr = new FileReader("lances.txt");
-    BufferedReader br = new BufferedReader(fr);
-
-    String linha = br.readLine();
-
-    while (linha != null) {
-
-        String[] partes = linha.split(";");
-
-        int idArquivo = Integer.parseInt(partes[0]);
-        int idParticipanteArq = Integer.parseInt(partes[1]); 
-        int idItemArq = Integer.parseInt(partes[2]);         
-        double valorArquivo = Double.parseDouble(partes[3]);
-        String dataArquivo = partes[4];
-        String horaArquivo = partes[5];
-
-        if (idArquivo == idProcurado) {
-            br.close();
-            return new Lance(idArquivo, null, null, valorArquivo, dataArquivo, horaArquivo);
+        int idItem;
+        if (itemLeilao == null) {
+            idItem = -1;
+        } else {
+            idItem = itemLeilao.getIdItem();
         }
 
-        linha = br.readLine();
+        int idParticipante;
+        if (participante == null) {
+            idParticipante = -1;
+        } else {
+            idParticipante = participante.getIdParticipante();
+        }
+
+        String linha = idLance + ";" +
+                       idParticipante + ";" +
+                       idItem + ";" +
+                       valorLance + ";" +
+                       dataLance + ";" +
+                       horaLance;
+
+        bw.write(linha);
+        bw.newLine();
+        bw.close();
+
+        return true;
     }
 
-    br.close();
-    return null;
-}
 
+    public ArrayList<Lance> listarLances() throws Exception {
 
-public ArrayList<Lance> listarLances() throws Exception {
+        ArrayList<Lance> lista = new ArrayList<Lance>();
 
-    ArrayList<Lance> lista = new ArrayList<Lance>();
+        File arquivo = new File("lances.txt");
+        if (!arquivo.exists()) {
+            return lista;
+        }
 
-    FileReader fr = new FileReader("lances.txt");
-    BufferedReader br = new BufferedReader(fr);
+        FileReader fr = new FileReader(arquivo);
+        BufferedReader br = new BufferedReader(fr);
 
-    String linha = br.readLine();
+        String linha = br.readLine();
 
-    while (linha != null) {
+        while (linha != null) {
 
-        String[] partes = linha.split(";");
+            if (linha.trim().equals("")) {
+                linha = br.readLine();
+                continue;
+            }
 
-        int idArquivo = Integer.parseInt(partes[0]);
-        int idParticipanteArq = Integer.parseInt(partes[1]); 
-        int idItemArq = Integer.parseInt(partes[2]);       
-        double valorArquivo = Double.parseDouble(partes[3]);
-        String dataArquivo = partes[4];
-        String horaArquivo = partes[5];
+            String[] partes = linha.split(";");
 
-        Lance lance = new Lance(idArquivo, null, null, valorArquivo, dataArquivo, horaArquivo);
-        lista.add(lance);
+            int idArquivo = Integer.parseInt(partes[0]);
+            int idPartArq = Integer.parseInt(partes[1]);
+            int idItemArq = Integer.parseInt(partes[2]);
+            double valorArq = Double.parseDouble(partes[3]);
+            String dataArq = partes[4];
+            String horaArq = partes[5];
 
-        linha = br.readLine();
+            Participante p = new Participante(idPartArq, "", "", "", "", "", "");
+            ItemLeilao it = new ItemLeilao(idItemArq, null, "", 0.0, false, null);
+
+            Lance l = new Lance(idArquivo, p, it, valorArq, dataArq, horaArq);
+            lista.add(l);
+
+            linha = br.readLine();
+        }
+
+        br.close();
+        return lista;
     }
 
-    br.close();
-    return lista;
-}
 
+    public Lance consultarLance(int idProcurado) throws Exception {
 
-public void mostrar() {
-    System.out.println("ID do Lance: " + idLance);
-    System.out.println("Valor: " + valorLance);
-    System.out.println("Data: " + dataLance);
-    System.out.println("Hora: " + horaLance);
-    System.out.println("----------------------------------");
-}
+        File arquivo = new File("lances.txt");
+        if (!arquivo.exists()) {
+            return null;
+        }
 
+        FileReader fr = new FileReader(arquivo);
+        BufferedReader br = new BufferedReader(fr);
+
+        String linha = br.readLine();
+
+        while (linha != null) {
+
+            if (linha.trim().equals("")) {
+                linha = br.readLine();
+                continue;
+            }
+
+            String[] partes = linha.split(";");
+
+            int idArquivo = Integer.parseInt(partes[0]);
+
+            if (idArquivo == idProcurado) {
+
+                int idPartArq = Integer.parseInt(partes[1]);
+                int idItemArq = Integer.parseInt(partes[2]);
+                double valorArq = Double.parseDouble(partes[3]);
+                String dataArq = partes[4];
+                String horaArq = partes[5];
+
+                br.close();
+
+                Participante p = new Participante(idPartArq, "", "", "", "", "", "");
+                ItemLeilao it = new ItemLeilao(idItemArq, null, "", 0.0, false, null);
+
+                return new Lance(idArquivo, p, it, valorArq, dataArq, horaArq);
+            }
+
+            linha = br.readLine();
+        }
+
+        br.close();
+        return null;
+    }
+
+    
+    public void mostrar() {
+        System.out.println("ID do Lance: " + idLance);
+        System.out.println("Valor: " + valorLance);
+        System.out.println("Data: " + dataLance);
+        System.out.println("Hora: " + horaLance);
+        System.out.println("----------------------------------");
+    }
 }
