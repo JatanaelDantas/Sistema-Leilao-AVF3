@@ -173,7 +173,67 @@ public class Leilao {
         return null;
     }
 
-  
+
+    public void iniciarLeilao() throws Exception {
+
+        this.statusLeilao = true;
+        ArrayList<Leilao> lista = listarLeiloes();
+
+        for (Leilao l : lista) {
+            if (l.getIdLeilao() == this.idLeilao) {
+                l.setStatusLeilao(true);
+            }
+        }
+
+        FileWriter fw = new FileWriter("leiloes.txt");
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        for (Leilao l : lista) {
+            String linha = l.getIdLeilao() + ";" +
+                        l.getDataInicioLeilao() + ";" +
+                        l.getHoraInicioLeilao() + ";" +
+                        l.getDataFimLeilao() + ";" +
+                        l.getHoraFimLeilao() + ";" +
+                        l.getStatusLeilao();
+
+            bw.write(linha);
+            bw.newLine();
+        }
+
+        bw.close();
+    }
+
+    public void finalizarLeilao() throws Exception {
+
+        this.statusLeilao = true; 
+
+        ArrayList<Leilao> lista = listarLeiloes();
+
+        for (Leilao l : lista) {
+            if (l.getIdLeilao() == this.idLeilao) {
+                l.setStatusLeilao(true);
+            }
+        }
+
+        FileWriter fw = new FileWriter("leiloes.txt");
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        for (Leilao l : lista) {
+            String linha =
+                l.getIdLeilao() + ";" +
+                l.getDataInicioLeilao() + ";" +
+                l.getHoraInicioLeilao() + ";" +
+                l.getDataFimLeilao() + ";" +
+                l.getHoraFimLeilao() + ";" +
+                l.getStatusLeilao();
+
+            bw.write(linha);
+            bw.newLine();
+        }
+
+        bw.close();
+    }
+
     public void mostrar() {
         System.out.println("Id leilão : " + idLeilao);
         System.out.println("Início    : " + dataInicioLeilao + " " + horaInicioLeilao);

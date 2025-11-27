@@ -9,10 +9,6 @@ public class App {
         int opcao = 0;
 
         do {
-            System.out.println("====== MENU DO SISTEMA DE LEILÃO ======");
-            System.out.println("1  - Cadastrar participante");
-            System.out.println("2  - Login participante");
-            System.out.println("3  - Listar participantes");
             System.out.println("4  - Cadastrar leilão");
             System.out.println("5  - Listar leilões");
             System.out.println("6  - Cadastrar item de leilão");
@@ -20,8 +16,11 @@ public class App {
             System.out.println("8  - Registrar lance");
             System.out.println("9  - Listar lances");
             System.out.println("10 - Arrematar item");
-            System.out.println("11 - Sair");
+            System.out.println("11 - Iniciar leilão");
+            System.out.println("12 - Finalizar leilão");
+            System.out.println("13 - Sair");
             System.out.print("Opção: ");
+
             opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
@@ -194,7 +193,41 @@ public class App {
                     }
                     break;
 
-                case 11:
+               case 11:
+                    System.out.print("Id do leilão que deseja iniciar: ");
+                    int idIniciar = Integer.parseInt(sc.nextLine());
+
+                   
+                    Leilao auxIni = new Leilao(0, "", "", "", "", false);
+                    Leilao leilaoIniciar = auxIni.consultarLeilao(idIniciar);
+
+                    if (leilaoIniciar == null) {
+                        System.out.println("Leilão não encontrado!\n");
+                        break;
+                    }
+
+                    leilaoIniciar.iniciarLeilao();
+                    System.out.println("Leilão iniciado com sucesso!\n");
+                    break;
+
+                case 12:
+                    System.out.print("Id do leilão que deseja finalizar: ");
+                    int idFinalizar = Integer.parseInt(sc.nextLine());
+
+                   
+                    Leilao auxFin = new Leilao(0, "", "", "", "", false);
+                    Leilao leilaoFinalizar = auxFin.consultarLeilao(idFinalizar);
+
+                    if (leilaoFinalizar == null) {
+                        System.out.println("Leilão não encontrado!\n");
+                        break;
+                    }
+
+                    leilaoFinalizar.finalizarLeilao();
+                    System.out.println("Leilão finalizado com sucesso!\n");
+                    break;
+
+                case 13:
                     System.out.println("Saindo...");
                     break;
 
@@ -203,7 +236,8 @@ public class App {
                     break;
             }
 
-        } while (opcao != 11);
+        } while (opcao != 13);
+
 
         sc.close();
     }
