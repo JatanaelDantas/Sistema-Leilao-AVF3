@@ -9,6 +9,9 @@ public class App {
         int opcao = 0;
 
         do {
+            System.out.println("1  - Registrar participante");
+            System.out.println("2  - Login");
+            System.out.println("3 - Listar participantes");
             System.out.println("4  - Cadastrar leilão");
             System.out.println("5  - Listar leilões");
             System.out.println("6  - Cadastrar item de leilão");
